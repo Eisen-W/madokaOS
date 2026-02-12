@@ -1,4 +1,7 @@
-GPPPARAMS = -m32 -ffreestanding -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-pie -no-pie
+INCLUDES = include
+
+GPPPARAMS = -I$(INCLUDES) -m32 -ffreestanding -nostdlib -fno-builtin -fno-rtti -fno-exceptions \
+			-fno-leading-underscore -fno-pie -no-pie -fno-use-cxa-atexit
 ASMPARAMS = --32
 LDPARAMS = -m elf_i386
 
@@ -22,6 +25,11 @@ madokaOS.bin: linker.ld $(objects)
 
 install: madokaOS.bin	
 		sudo cp $< /boot/madokaOS.bin
+
+run: madokaOS.iso
+	qemu-system-i386 -cdrom madokaOS.iso
+
+
 
 clean:
 	rm -rf $(OBJDIR) madokaOS.bin madokaOS.iso iso
