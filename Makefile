@@ -8,7 +8,8 @@ LDPARAMS = -m elf_i386
 OBJDIR = obj
 
 objects = $(OBJDIR)/loader.o \
-		  $(OBJDIR)/kernel.o	
+		  $(OBJDIR)/kernel.o \
+		  $(OBJDIR)/gdt.o	
 
 all: madokaOS.bin
 
