@@ -9,7 +9,8 @@ OBJDIR = obj
 
 objects = $(OBJDIR)/loader.o \
 		  $(OBJDIR)/kernel.o \
-		  $(OBJDIR)/gdt.o	
+		  $(OBJDIR)/gdt.o	 \
+		  $(OBJDIR)/port.o
 
 all: madokaOS.bin
 
