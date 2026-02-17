@@ -14,10 +14,16 @@ class InterruptManager
         uint16_t gdt_codeSegmentSelector;
         uint8_t reserved;
         uint8_t access;
-        uint16_t handlerAddressHighBits
+        uint16_t handlerAddressHighBits;
     } __attribute__((packed));
 
     static GateDescriptor interruptDescriptorTable[256];
+
+    struct InterruptDescriptorTablePointer
+    {
+        uint16_t size;
+        uint32_t base;
+    } __attribute__((packed));
 
     static void SetInterruptDescriptorTableEntry(
         uint8_t intrerruptNumber,
@@ -27,10 +33,17 @@ class InterruptManager
         uint8_t DescriptorType
     );
 
+    Port8bitSlow picMasterCommand;
+    Port8bitSlow picMasterData;
+    Port8bitSlow picSlaveCommand;
+    Port8bitSlow picSlaveData;
+
     public:
 
-    InterruptManager(GlobalDescriptorTable[256]);
+    InterruptManager(GlobalDescriptorTable* gdt);
     ~InterruptManager();
+
+    void Activate();
 
     static uint32_t handleInterrupt(uint8_t interruptNumber, uint32_t esp);
 
