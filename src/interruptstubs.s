@@ -32,10 +32,26 @@ _ZN16InterruptManager16HandleException\num\()Ev:
 .macro HandleInterruptRequest num
 .global _ZN16InterruptManager26HandleInterruptRequest\num\()Ev
 _ZN16InterruptManager26HandleInterruptRequest\num\()Ev:
-     pusha
-    movb $0x20, %al
-    outb %al, $0x20
+    pusha
+    pushl %ds
+    pushl %es
+    pushl %fs
+    pushl %gs
+
+    movl %esp, %eax
+    pushl %eax
+    pushl $(IRQ_BASE + \num)
+    call _ZN16InterruptManager15handleInterruptEhj
+    addl $8, %esp
+
+    popl %gs
+    popl %fs
+    popl %es
+    popl %ds
     popa
+
+    # movb $0x20, %al
+    # outb %al, $0x20
     iret
 .endm
 

@@ -39,17 +39,17 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
     picMasterCommand.Write(0x11);
     picSlaveCommand.Write(0x11);
 
-    picMasterCommand.Write(0x20);
-    picSlaveCommand.Write(0x28);
+    picMasterData.Write(0x20);
+    picSlaveData.Write(0x28);
 
-    picMasterCommand.Write(0x04);
-    picSlaveCommand.Write(0x02);
+    picMasterData.Write(0x04);
+    picSlaveData.Write(0x02);
     
-    picMasterCommand.Write(0x01);
-    picSlaveCommand.Write(0x01);
+    picMasterData.Write(0x01);
+    picSlaveData.Write(0x01);
 
-    picMasterCommand.Write(0x00);
-    picSlaveCommand.Write(0x00);
+    picMasterData.Write(0x00);
+    picSlaveData.Write(0x00);
 
 
     InterruptDescriptorTablePointer idt;
@@ -70,8 +70,26 @@ void InterruptManager::Activate()
 
 uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber, uint32_t esp)
 {
-    //if(interruptNumber >= 0x20 && interruptNumber < 0x30)
-    //    picMasterCommand.Write(0x20);
-    printf(" INTERRUPT");
+
+    if(interruptNumber >= 0x20 && interruptNumber < 0x30)
+    {
+        __asm__ volatile("outb %0, %1" : : "a"((uint8_t)0x20), "Nd"((uint16_t)0x20));
+        if(interruptNumber >= 0x28)
+            __asm__ volatile("outb %0, %1" : : "a"((uint8_t)0x20), "Nd"((uint16_t)0xA0));
+    }
+    /*
+    if(interruptNumber >= 0x20 && interruptNumber < 0x30)
+    {
+        picMasterCommand.Write(0x20);
+        if(interruptNumber >= 0x28)
+            picSlaveCommand.Write(0x20);
+    }*/
+    if(interruptNumber == 0x21)
+    {
+        uint8_t scancode;
+        __asm__ volatile("inb %1, %0" : "=a"(scancode) : "Nd"((uint16_t)0x60));
+        if(!(scancode & 0x80)) printf(" DUMBASS");
+    }
+    //printf(" INTERRUPT");
     return esp;
 }
